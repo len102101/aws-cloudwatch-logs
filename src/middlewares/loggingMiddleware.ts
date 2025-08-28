@@ -72,7 +72,7 @@ export function loggingMiddleware(
 
       await cloudWatchLogger.logApiRequest(logData);
     } catch (error) {
-      console.error("❌ Failed to log API request:", error);
+      // 로깅 실패는 조용히 처리 (AWS CloudWatch에 별도 에러 로그 전송 가능)
     }
   });
 

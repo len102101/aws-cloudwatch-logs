@@ -43,7 +43,7 @@ export class CloudWatchLogger {
       await this.ensureLogGroupExists(this.errorLogGroupName);
       // 초기화 시에는 로그 스트림을 미리 생성하지 않음 (날짜별로 동적 생성)
     } catch (error) {
-      console.error("Failed to initialize CloudWatch logger:", error);
+      // CloudWatch 초기화 실패는 조용히 처리하거나 별도 로깅 시스템으로 전송
       throw error;
     }
   }
@@ -75,8 +75,7 @@ export class CloudWatchLogger {
         this.sequenceTokens.set(streamKey, response.nextSequenceToken);
       }
     } catch (error) {
-      console.error("Failed to send log event to CloudWatch:", error);
-      // 로그 전송 실패 시에도 애플리케이션이 중단되지 않도록 에러를 던지지 않음
+      // CloudWatch 로그 전송 실패는 조용히 처리
     }
   }
 
@@ -167,10 +166,10 @@ export class CloudWatchLogger {
             logGroupName,
           })
         );
-        console.log(`Created log group: ${logGroupName}`);
+        // Log group created successfully
       }
     } catch (error) {
-      console.error(`Error ensuring log group exists: ${logGroupName}`, error);
+      // Log group 생성 실패는 조용히 처리하거나 별도 로깅
       throw error;
     }
   }
@@ -197,13 +196,10 @@ export class CloudWatchLogger {
             logStreamName,
           })
         );
-        console.log(`Created log stream: ${logStreamName} in ${logGroupName}`);
+        // Log stream created successfully
       }
     } catch (error) {
-      console.error(
-        `Error ensuring log stream exists: ${logStreamName}`,
-        error
-      );
+      // Log stream 생성 실패는 조용히 처리하거나 별도 로깅
       throw error;
     }
   }
@@ -271,7 +267,6 @@ export class CloudWatchLogger {
     return "🔴";
   }
   private formatErrorLog(data: ErrorLogData): string {
-    console.log("data", data);
     const logParts = [
       `🚨 [ERROR_ID: ${data.errorId}]`,
       `[${data.method}] ${data.endpoint}`,

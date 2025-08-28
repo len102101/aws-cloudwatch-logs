@@ -62,12 +62,12 @@ async function start() {
   });
 
   app.use(
-    (
+    async (
       err: unknown,
       req: Request,
       res: Response,
       next: NextFunction
-    ): Response | void => {
+    ): Promise<Response | void> => {
       if (err instanceof ValidateError) {
         console.warn(`Caught Validation Error for ${req.path}:`, err.fields);
         return res.status(422).json({
@@ -76,7 +76,7 @@ async function start() {
         });
       }
       if (err instanceof Error) {
-        errorHandler(err, req, res, next);
+        return await errorHandler(err, req, res, next);
       }
 
       next();
